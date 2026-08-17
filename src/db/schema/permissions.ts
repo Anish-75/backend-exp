@@ -6,13 +6,6 @@ export const permissions = pgTable("permissions", {
   name: varchar("name", { length: 100 })
     .notNull()
     .unique(),
-  /*
-    Current permission names:
-      inst:create       inst:update       inst:delete
-      instadmin:create  instadmin:update  instadmin:delete
-      user:create       user:update       user:delete
-      password:reset                                        <- self-service
-  */
 });
 
 // ─── TypeScript types ───────────────────────────────────────────
