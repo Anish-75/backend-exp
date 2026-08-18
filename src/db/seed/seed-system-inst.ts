@@ -1,6 +1,6 @@
 
-import { db } from "../client";
-import { inst } from "../schema";
+import { db } from "../client.js";
+import { inst } from "../schema/index.js";
 import { eq } from "drizzle-orm";
  
 export async function seedSystemInst() {

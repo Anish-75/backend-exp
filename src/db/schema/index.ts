@@ -1,14 +1,14 @@
 import { relations } from "drizzle-orm";
-import { user } from "./user.schema";
-import { inst } from "./inst.schema";
-import { roles } from "./roles.schema";
-import { permissions } from "./permissions.schema";
-import { rolePermissions } from "./role-permissions.schema";
-export * from "./user.schema";
-export * from "./inst.schema";
-export * from "./roles.schema";
-export * from "./permissions.schema";
-export * from "./role-permissions.schema";
+import { user } from "./user.schema.js";
+import { inst } from "./inst.schema.js";
+import { roles } from "./roles.schema.js";
+import { permissions } from "./permissions.schema.js";
+import { rolePermissions } from "./role-permissions.schema.js";
+export * from "./user.schema.js";
+export * from "./inst.schema.js";
+export * from "./roles.schema.js";
+export * from "./permissions.schema.js";
+export * from "./role-permissions.schema.js";
 export {
   user as authUser,
   session,
@@ -17,7 +17,7 @@ export {
   userRelations as authUserRelations,
   sessionRelations,
   accountRelations,
-} from "./auth-schema";
+} from "./auth-schema.js";
 
 export const userRelations = relations(user, ({ one }) => ({
   inst: one(inst, { fields: [user.inst_id], references: [inst.id] }),
