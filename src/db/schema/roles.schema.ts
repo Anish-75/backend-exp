@@ -7,14 +7,13 @@ import {
   timestamp,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
-import { user } from "./user.schema";
 
 export const roleScopeEnum = pgEnum("role_scope", ["PLATFORM", "INSTITUTE"]);
 
 export const roles = pgTable("roles", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 50 }).notNull().unique(),
-  display_name: varchar("display_name", { length: 100 }).notNull(),
+  displayName: varchar("display_name", { length: 100 }).notNull(),
   scope: roleScopeEnum("scope").notNull(),
   createdOn: timestamp("created_on").defaultNow().notNull(),
   createdBy: uuid("created_by"),
