@@ -15,7 +15,10 @@ export const user = pgTable("user", {
   inst_id: text("inst_id").notNull(),
   role_id: text("role_id").notNull(),
   is_temp_password: boolean("is_temp_password").default(true),
-  status: text("status").default("ACTIVE"),
+  is_active: boolean("is_active").default(true),
+  is_archived: boolean("is_archived").default(false),
+  created_by: text("created_by"),
+  updated_by: text("updated_by"),
 });
 
 export const session = pgTable(
