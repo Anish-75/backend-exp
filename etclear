@@ -1,0 +1,194 @@
+[1mdiff --git a/src/db/migrations/0004_special_iceman.sql b/src/db/migrations/0004_special_iceman.sql[m
+[1mnew file mode 100644[m
+[1mindex 0000000..da65cb8[m
+[1m--- /dev/null[m
+[1m+++ b/src/db/migrations/0004_special_iceman.sql[m
+[36m@@ -0,0 +1 @@[m
+[32m+[m[32mALTER TABLE "account" ADD COLUMN "issuer" text;[m
+\ No newline at end of file[m
+[1mdiff --git a/src/db/migrations/meta/0004_snapshot.json b/src/db/migrations/meta/0004_snapshot.json[m
+[1mnew file mode 100644[m
+[1mindex 0000000..cc7f953[m
+[1m--- /dev/null[m
+[1m+++ b/src/db/migrations/meta/0004_snapshot.json[m
+[36m@@ -0,0 +1,766 @@[m
+[32m+[m[32m{[m
+[32m+[m[32m  "id": "7659defe-3c4f-4c64-bd48-7d92acf6d035",[m
+[32m+[m[32m  "prevId": "72e55375-0f21-44c9-8bc4-ea62a11d5eb6",[m
+[32m+[m[32m  "version": "7",[m
+[32m+[m[32m  "dialect": "postgresql",[m
+[32m+[m[32m  "tables": {[m
+[32m+[m[32m    "public.account": {[m
+[32m+[m[32m      "name": "account",[m
+[32m+[m[32m      "schema": "",[m
+[32m+[m[32m      "columns": {[m
+[32m+[m[32m        "id": {[m
+[32m+[m[32m          "name": "id",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": true,[m
+[32m+[m[32m          "notNull": true[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "account_id": {[m
+[32m+[m[32m          "name": "account_id",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": true[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "provider_id": {[m
+[32m+[m[32m          "name": "provider_id",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": true[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "user_id": {[m
+[32m+[m[32m          "name": "user_id",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": true[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "access_token": {[m
+[32m+[m[32m          "name": "access_token",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": false[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "refresh_token": {[m
+[32m+[m[32m          "name": "refresh_token",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": false[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "id_token": {[m
+[32m+[m[32m          "name": "id_token",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": false[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "access_token_expires_at": {[m
+[32m+[m[32m          "name": "access_token_expires_at",[m
+[32m+[m[32m          "type": "timestamp",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": false[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "refresh_token_expires_at": {[m
+[32m+[m[32m          "name": "refresh_token_expires_at",[m
+[32m+[m[32m          "type": "timestamp",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": false[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "scope": {[m
+[32m+[m[32m          "name": "scope",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": false[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "password": {[m
+[32m+[m[32m          "name": "password",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": false[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "issuer": {[m
+[32m+[m[32m          "name": "issuer",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": false[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "created_at": {[m
+[32m+[m[32m          "name": "created_at",[m
+[32m+[m[32m          "type": "timestamp",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": true,[m
+[32m+[m[32m          "default": "now()"[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "updated_at": {[m
+[32m+[m[32m          "name": "updated_at",[m
+[32m+[m[32m          "type": "timestamp",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": true[m
+[32m+[m[32m        }[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "indexes": {[m
+[32m+[m[32m        "account_userId_idx": {[m
+[32m+[m[32m          "name": "account_userId_idx",[m
+[32m+[m[32m          "columns": [[m
+[32m+[m[32m            {[m
+[32m+[m[32m              "expression": "user_id",[m
+[32m+[m[32m              "isExpression": false,[m
+[32m+[m[32m              "asc": true,[m
+[32m+[m[32m              "nulls": "last"[m
+[32m+[m[32m            }[m
+[32m+[m[32m          ],[m
+[32m+[m[32m          "isUnique": false,[m
+[32m+[m[32m          "concurrently": false,[m
+[32m+[m[32m          "method": "btree",[m
+[32m+[m[32m          "with": {}[m
+[32m+[m[32m        }[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "foreignKeys": {[m
+[32m+[m[32m        "account_user_id_user_id_fk": {[m
+[32m+[m[32m          "name": "account_user_id_user_id_fk",[m
+[32m+[m[32m          "tableFrom": "account",[m
+[32m+[m[32m          "tableTo": "user",[m
+[32m+[m[32m          "columnsFrom": [[m
+[32m+[m[32m            "user_id"[m
+[32m+[m[32m          ],[m
+[32m+[m[32m          "columnsTo": [[m
+[32m+[m[32m            "id"[m
+[32m+[m[32m          ],[m
+[32m+[m[32m          "onDelete": "cascade",[m
+[32m+[m[32m          "onUpdate": "no action"[m
+[32m+[m[32m        }[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "compositePrimaryKeys": {},[m
+[32m+[m[32m      "uniqueConstraints": {},[m
+[32m+[m[32m      "policies": {},[m
+[32m+[m[32m      "checkConstraints": {},[m
+[32m+[m[32m      "isRLSEnabled": false[m
+[32m+[m[32m    },[m
+[32m+[m[32m    "public.session": {[m
+[32m+[m[32m      "name": "session",[m
+[32m+[m[32m      "schema": "",[m
+[32m+[m[32m      "columns": {[m
+[32m+[m[32m        "id": {[m
+[32m+[m[32m          "name": "id",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": true,[m
+[32m+[m[32m          "notNull": true[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "expires_at": {[m
+[32m+[m[32m          "name": "expires_at",[m
+[32m+[m[32m          "type": "timestamp",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": true[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "token": {[m
+[32m+[m[32m          "name": "token",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": true[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "created_at": {[m
+[32m+[m[32m          "name": "created_at",[m
+[32m+[m[32m          "type": "timestamp",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": true,[m
+[32m+[m[32m          "default": "now()"[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "updated_at": {[m
+[32m+[m[32m          "name": "updated_at",[m
+[32m+[m[32m          "type": "timestamp",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": true[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "ip_address": {[m
+[32m+[m[32m          "name": "ip_address",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "notNull": false[m
+[32m+[m[32m        },[m
+[32m+[m[32m        "user_agent": {[m
+[32m+[m[32m          "name": "user_agent",[m
+[32m+[m[32m          "type": "text",[m
+[32m+[m[32m          "primaryKey": false,[m
+[32m+[m[32m          "
