@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { bearer } from "better-auth/plugins";
-import { db } from "../db/index.js"; // Dev A's pool + drizzle() instance
+import { db } from "../db/client"; // Dev A's pool + drizzle() instance
  
 export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
