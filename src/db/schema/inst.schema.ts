@@ -14,7 +14,10 @@ export const inst = pgTable("inst", {
   code: varchar("code", { length: 50 }).notNull().unique(),
   name: varchar("name", { length: 255 }).notNull(),
   address: text("address"),
-  contact_phone: varchar("contact_phone", { length: 20 }),
+  contact_phone: varchar("contact_phone", { length: 10 })
+    .notNull()
+    .unique()
+    .default("0000000000"),
   contact_email: varchar("contact_email", { length: 255 }),
   created_by: uuid("created_by").references((): AnyPgColumn => user.id),
   updated_by: uuid("updated_by").references((): AnyPgColumn => user.id),

@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const required = [
-  " DATABASE_URL",
+  "DATABASE_URL",
   "BETTER_AUTH_SECRET",
   "BETTER_AUTH_URL",
 ] as const;

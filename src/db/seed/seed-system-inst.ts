@@ -1,23 +1,18 @@
+
 import { db } from "../client";
 import { inst } from "../schema";
 import { eq } from "drizzle-orm";
-
+ 
 export async function seedSystemInst() {
-  const existing = await db.select().from(inst).where(eq(inst.code, "SYSTEM"));
-  if (existing.length) {
-    console.log("System inst already exists");
-    return existing[0];
-  }
-
-  const [systemInst] = await db
+  const [row] = await db
     .insert(inst)
-    .values({
-      code: "SYSTEM",
-      name: "System",
-      contact_phone: process.env.SUPERADMIN_PHONE,
-    })
+    .values({ code: "SYS", name: "System", contactPhone: "0000000000" })
+    .onConflictDoNothing({ target: inst.code })
     .returning();
-
-  console.log("System inst created:", systemInst.id);
-  return systemInst;
+ 
+  if (row) return row;
+ 
+  // already exists — fetch and return it so downstream seeds still work
+  const [existing] = await db.select().from(inst).where(eq(inst.code, "SYS"));
+  return existing;
 }
