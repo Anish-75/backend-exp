@@ -7,7 +7,6 @@ import {
   timestamp,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
-import { user } from "./user.schema.js";
 
 export const roleScopeEnum = pgEnum("role_scope", ["PLATFORM", "INSTITUTE"]);
 
