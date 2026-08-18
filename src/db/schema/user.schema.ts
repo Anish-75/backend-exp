@@ -17,8 +17,7 @@ export const user = pgTable("user", {
   phone_number: varchar("phone_number", { length: 20 })
     .notNull()
     .unique()
-    .default("000000000"),
-  email: varchar("email", { length: 255 }),
+    .default("0000000000"),
   password: varchar("password", { length: 255 }).notNull(),
   role_id: uuid("role_id")
     .notNull()

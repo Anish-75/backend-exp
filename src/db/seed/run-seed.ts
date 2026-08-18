@@ -1,23 +1,23 @@
-import 'dotenv/config';
-import { seedRolesAndPermissions } from './seed-roles-permissions';
-import { seedSystemInst } from './seed-system-inst';
-import { seedSuperAdmin } from './seed-superadmin';
-import { pool } from '../client';
-
+import { seedSystemInst } from "./seed-system-inst";
+import { seedRolesAndPermissions } from "./seed-roles-permissions";
+import { seedSuperAdmin } from "./seed-superadmin";
+import { closePool } from "../client";
+ 
 async function main() {
+  console.log("1/3 Seeding system inst...");
+  await seedSystemInst();
+ 
+  console.log("2/3 Seeding roles & permissions...");
   await seedRolesAndPermissions();
-  const systemInst = await seedSystemInst();
-  await seedSuperAdmin(systemInst.id);
+ 
+  console.log("3/3 Seeding SuperAdmin...");
+  await seedSuperAdmin();
+ 
+  console.log("Seed complete.");
+  await closePool();
 }
-
-main()
-  .then(async () => {
-    console.log('🌱 Seeding complete');
-    await pool.end();
-    process.exit(0);
-  })
-  .catch(async (err) => {
-    console.error('❌ Seed failed:', err);
-    await pool.end();
-    process.exit(1);
-  });
+ 
+main().catch((err) => {
+  console.error("Seed failed:", err);
+  process.exit(1);
+});

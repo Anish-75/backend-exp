@@ -15,6 +15,13 @@
       "when": 1787027125907,
       "tag": "0001_marvelous_silvermane",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787039542432,
+      "tag": "0002_parched_silver_surfer",
+      "breakpoints": true
     }
   ]
 }
