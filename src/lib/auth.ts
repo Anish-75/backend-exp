@@ -15,7 +15,10 @@ export const auth = betterAuth({
       inst_id: { type: "string", required: true },
       role_id: { type: "string", required: true },
       is_temp_password: { type: "boolean", defaultValue: true },
-      status: { type: "string", defaultValue: "ACTIVE" },
+      is_active: { type: "boolean", defaultValue: true },       
+      is_archived: { type: "boolean", defaultValue: false },    
+      created_by: { type: "string", required: false },         
+      updated_by: { type: "string", required: false },         
     },
   },
   plugins: [bearer()], // lets mobile/API clients send Authorization: Bearer <token>
