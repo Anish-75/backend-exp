@@ -1,10 +1,10 @@
-import { db } from "../client";
-import { roles, permissions, rolePermissions } from "../schema";
+import { db } from "../client.js";
+import { roles, permissions, rolePermissions } from "../schema/index.js";
  
 const ROLE_SEED = [
-  { name: "SUPERADMIN", display_name: "Super Admin", scope: "PLATFORM" as const },
-  { name: "INSTADMIN", display_name: "Institute Admin", scope: "INSTITUTE" as const },
-  { name: "ADMIN", display_name: "Admin", scope: "INSTITUTE" as const },
+  { name: "SUPERADMIN", displayName: "Super Admin", scope: "PLATFORM" as const },
+  { name: "INSTADMIN", displayName: "Institute Admin", scope: "INSTITUTE" as const },
+  { name: "ADMIN", displayName: "Admin", scope: "INSTITUTE" as const },
 ] as const;
  
 const BASE_PERMISSIONS = [
@@ -16,7 +16,7 @@ const BASE_PERMISSIONS = [
 export async function seedRolesAndPermissions() {
   const insertedRoles = await db
     .insert(roles)
-    .values(ROLE_SEED.map((r) => ({ name: r.name, display_name: r.display_name, scope: r.scope })))
+    .values(ROLE_SEED.map((r) => ({ name: r.name, displayName: r.displayName, scope: r.scope })))
     .onConflictDoNothing({ target: roles.name })
     .returning();
  

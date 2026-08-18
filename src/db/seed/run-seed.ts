@@ -1,7 +1,9 @@
-import { seedSystemInst } from "./seed-system-inst";
-import { seedRolesAndPermissions } from "./seed-roles-permissions";
-import { seedSuperAdmin } from "./seed-superadmin";
-import { closePool } from "../client";
+// src/db/seed/run-seed.ts
+import "dotenv/config";           
+import { seedSystemInst } from "./seed-system-inst.js";
+import { seedRolesAndPermissions } from "./seed-roles-permissions.js";
+import { seedSuperAdmin } from "./seed-superadmin.js";
+import { closePool } from "../client.js";
  
 async function main() {
   console.log("1/3 Seeding system inst...");

@@ -6,8 +6,8 @@ import {
   timestamp,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
-import { inst } from "./inst.schema";
-import { roles } from "./roles.schema";
+import { inst } from "./inst.schema.js";
+import { roles } from "./roles.schema.js";
 
 export const user = pgTable("user", {
   id: uuid("id").primaryKey().defaultRandom(),
