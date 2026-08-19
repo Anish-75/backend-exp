@@ -1,0 +1,1 @@
+ALTER TABLE "inst" RENAME COLUMN "contact_phone" TO "phone_number";

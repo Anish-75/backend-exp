@@ -16,6 +16,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*", "drizzle.config.ts"],
+  "include": ["src/**/*", "drizzle.config.ts", "src/db/schema/auth-schema.ts"],
   "exclude": ["node_modules", "dist"]
 }

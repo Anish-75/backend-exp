@@ -13,7 +13,7 @@ export const inst = pgTable("inst", {
   code: varchar("code", { length: 20 }).notNull().unique(),
   name: varchar("name", { length: 255 }).notNull(),
   address: text("address"),
-  contactPhone: varchar("contact_phone", { length: 20 }),
+  phoneNumber: varchar("phone_number", { length: 20 }),
   contactEmail: varchar("contact_email", { length: 255 }),
   createdOn: timestamp("created_on").defaultNow().notNull(),
   createdBy: uuid("created_by"),

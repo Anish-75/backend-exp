@@ -12,6 +12,8 @@ export const user = pgTable("user", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+  phoneNumber: text("phone_number").unique(),
+  phoneNumberVerified: boolean("phone_number_verified"),
   inst_id: text("inst_id").notNull(),
   role_id: text("role_id").notNull(),
   is_temp_password: boolean("is_temp_password").default(true),
@@ -55,8 +57,8 @@ export const account = pgTable(
     accessTokenExpiresAt: timestamp("access_token_expires_at"),
     refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
     scope: text("scope"),
+    issuer:text("issuer"),
     password: text("password"),
-    issuer: text("issuer"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .$onUpdate(() => /* @__PURE__ */ new Date())
