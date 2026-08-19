@@ -32,8 +32,14 @@ export async function seedSuperAdmin() {
       inst_id: systemInst.id,
       role_id: superRole.id,
       is_temp_password: true,
+      phoneNumber: systemInst.phoneNumber,   // e.g. "0000000000" from the SYS inst row
+      // phoneNumberVerified: true,
     },
   });
+
+    if (result?.user) {
+    await db.update(user).set({ phoneNumberVerified: true }).where(eq(user.id, result.user.id));
+  }
 
   console.log(
     "SuperAdmin created. Temp password (save this now):",
