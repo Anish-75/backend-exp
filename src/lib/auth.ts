@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { bearer } from "better-auth/plugins";
+import { bearer,phoneNumber } from "better-auth/plugins";
 import { db } from "../db/client.js"; // Dev A's pool + drizzle() instance
  
 export const auth = betterAuth({
@@ -21,5 +21,14 @@ export const auth = betterAuth({
       updated_by: { type: "string", required: false },       
     },
   },
-  plugins: [bearer()], // lets mobile/API clients send Authorization: Bearer <token>
+  plugins: [bearer(),
+    phoneNumber({
+      // required by the plugin's type even though you won't use OTP sign-up
+      sendOTP: async () => {
+        throw new Error("OTP flow disabled — accounts are created server-side by admins");
+      },
+      requireVerification: false,
+    }),
+  ],
+   // lets mobile/API clients send Authorization: Bearer <token>
 });
