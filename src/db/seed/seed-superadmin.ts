@@ -1,26 +1,25 @@
 import { auth } from "../../lib/auth.js";
-import { db } from "../client.js";
-import { roles } from "../schema/roles.schema.js";
-import { inst } from "../schema/inst.schema.js";
-import { user } from "../schema/auth-schema.js";
-import { eq } from "drizzle-orm";
+import { prisma } from "../client.js";
 import { generateTempPassword } from "../../modules/auth/password.utils.js";
 
 export async function seedSuperAdmin() {
-  const [existingUser] = await db
-    .select()
-    .from(user)
-    .where(eq(user.email, "superadmin@school-erp.local"));
+  const existingUser = await prisma.user.findUnique({
+    where: { email: "superadmin@school-erp.local" },
+  });
   if (existingUser) {
     console.log("SuperAdmin already exists. Skipping.");
     return;
   }
 
-  const [superRole] = await db
-    .select()
-    .from(roles)
-    .where(eq(roles.name, "SUPERADMIN"));
-  const [systemInst] = await db.select().from(inst).where(eq(inst.code, "SYS"));
+  const superRole = await prisma.roles.findUnique({
+    where: { name: "SUPERADMIN" },
+  });
+  if (!superRole) throw new Error("SUPERADMIN role not found — run seedRolesAndPermissions first");
+
+  const systemInst = await prisma.inst.findUnique({
+    where: { code: "SYS" },
+  });
+  if (!systemInst) throw new Error("System inst not found — run seedSystemInst first");
 
   const tempPassword = generateTempPassword();
 
@@ -32,13 +31,17 @@ export async function seedSuperAdmin() {
       inst_id: systemInst.id,
       role_id: superRole.id,
       is_temp_password: true,
-      phoneNumber: systemInst.phoneNumber,   // e.g. "0000000000" from the SYS inst row
-      // phoneNumberVerified: true,
+      is_active: true,
+      is_archived: false,
+      phoneNumber: systemInst.phone_number, // API key stays camelCase — Better Auth's phoneNumber plugin convention
     },
   });
 
-    if (result?.user) {
-    await db.update(user).set({ phoneNumberVerified: true }).where(eq(user.id, result.user.id));
+  if (result?.user) {
+    await prisma.user.update({
+      where: { id: result.user.id },
+      data: { phoneNumberVerified: true },
+    });
   }
 
   console.log(

@@ -1,27 +1,33 @@
 import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { bearer,phoneNumber } from "better-auth/plugins";
-import { db } from "../db/client.js"; // Dev A's pool + drizzle() instance
- 
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import { bearer, phoneNumber } from "better-auth/plugins";
+import { prisma } from "../db/client.js";
+import { env } from "../config/env.js";
+
 export const auth = betterAuth({
-  database: drizzleAdapter(db, { provider: "pg" }),
-  secret: process.env.BETTER_AUTH_SECRET,
-  baseURL: process.env.BETTER_AUTH_URL,
+  database: prismaAdapter(prisma, { provider: "postgresql" }),
+  secret: env.BETTER_AUTH_SECRET,
+  baseURL: env.BETTER_AUTH_URL,
   emailAndPassword: {
     enabled: true,
+  },
+  session: {
+    expiresIn: env.SESSION_TTL_SECONDS,
+    updateAge: env.SESSION_UPDATE_AGE_SECONDS,
   },
   user: {
     additionalFields: {
       inst_id: { type: "string", required: true },
       role_id: { type: "string", required: true },
       is_temp_password: { type: "boolean", defaultValue: true },
-      is_active: { type: "boolean", defaultValue: true },       
-      is_archived: { type: "boolean", defaultValue: false },    
-      created_by: { type: "string", required: false },         
-      updated_by: { type: "string", required: false },       
+      is_active: { type: "boolean", defaultValue: true },
+      is_archived: { type: "boolean", defaultValue: false },
+      created_by: { type: "string", required: false },
+      updated_by: { type: "string", required: false },
     },
   },
-  plugins: [bearer(),
+  plugins: [
+    bearer(), // lets mobile/API clients send Authorization: Bearer <token>
     phoneNumber({
       // required by the plugin's type even though you won't use OTP sign-up
       sendOTP: async () => {
@@ -30,5 +36,4 @@ export const auth = betterAuth({
       requireVerification: false,
     }),
   ],
-   // lets mobile/API clients send Authorization: Bearer <token>
 });
