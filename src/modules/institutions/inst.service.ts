@@ -1,35 +1,45 @@
-import { db } from "../../db/client.js";
-import { inst } from "../../db/schema/inst.schema.js";
-import { eq } from "drizzle-orm";
+// src/modules/institutions/inst.service.ts
+import { prisma } from "../../db/client.js";
 import { createInstAdmin } from "../inst-admin/inst-admin.service.js";
- 
+
 export interface CreateInstitutionInput {
   code: string;
   name: string;
   address?: string;
-  contactPhone?: string;
-  contactEmail?: string;
-  createdBy?: string;
+  phone_number?: string;
+  contact_email?: string;
+  created_by?: string;
 }
- 
+
 export async function createInstitution(data: CreateInstitutionInput) {
-  return db.transaction(async (tx) => {
-    const [row] = await tx.insert(inst).values(data).returning();
-    return row;
-  });
+  return prisma.inst.create({ data });
 }
 
 export async function createInstitutionWithAdmin(
   instData: CreateInstitutionInput,
   adminPhoneNumber: string
 ) {
-  const [instRow] = await db.insert(inst).values(instData).returning();
- 
+  const instRow = await prisma.inst.create({ data: instData });
+
   try {
     const { user, tempPassword } = await createInstAdmin(instRow.id, adminPhoneNumber);
     return { inst: instRow, admin: user, tempPassword };
   } catch (err) {
-    await db.delete(inst).where(eq(inst.id, instRow.id));
+    await prisma.inst.delete({ where: { id: instRow.id } });
     throw err;
   }
+}
+
+export async function updateInstitution(instId: string, data: Partial<CreateInstitutionInput>) {
+  return prisma.inst.update({
+    where: { id: instId },
+    data: { ...data, updated_on: new Date() },
+  });
+}
+
+export async function deleteInstitution(instId: string) {
+  return prisma.inst.update({
+    where: { id: instId },
+    data: { is_archived: true, is_active: false, updated_on: new Date() },
+  });
 }
