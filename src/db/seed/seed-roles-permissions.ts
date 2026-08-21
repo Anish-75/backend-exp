@@ -7,9 +7,31 @@ const ROLE_SEED = [
 ];
 
 const BASE_PERMISSIONS = [
-  "inst:create", "inst:read", "inst:update", "inst:delete",
-  "user:create", "user:read", "user:update", "user:delete",
+  // Institution permissions (Platform level)
+  "inst:create",
+  "inst:read",
+  "inst:update",
+  "inst:delete",
   "role:manage",
+
+  // User management & self-service permissions (scoped to own inst_id for INSTADMIN)
+  "user:create",
+  "user:read",
+  "user:list",
+  "user:update",
+  "user:delete",
+  "user:reset_password",
+  "password:change_self",
+];
+
+const INSTADMIN_PERMISSIONS = [
+  "user:create",
+  "user:read",
+  "user:list",
+  "user:update",
+  "user:delete",
+  "user:reset_password",
+  "password:change_self",
 ];
 
 export async function seedRolesAndPermissions() {
@@ -17,7 +39,10 @@ export async function seedRolesAndPermissions() {
     ROLE_SEED.map((r) =>
       prisma.roles.upsert({
         where: { name: r.name },
-        update: {},
+        update: {
+          display_name: r.display_name,
+          scope: r.scope,
+        },
         create: r,
       })
     )
@@ -33,12 +58,31 @@ export async function seedRolesAndPermissions() {
     )
   );
 
+  const permMap = new Map(insertedPerms.map((p) => [p.name, p.id]));
+
+  // Seed SuperAdmin permissions (full platform access)
   const superadmin = insertedRoles.find((r) => r.name === "SUPERADMIN");
   if (superadmin) {
     await prisma.role_permissions.createMany({
       data: insertedPerms.map((p) => ({
         role_id: superadmin.id,
         permission_id: p.id,
+      })),
+      skipDuplicates: true,
+    });
+  }
+
+  // Seed InstAdmin permissions (restricted to institution user-management)
+  const instadmin = insertedRoles.find((r) => r.name === "INSTADMIN");
+  if (instadmin) {
+    const instAdminPermIds = INSTADMIN_PERMISSIONS
+      .map((name) => permMap.get(name))
+      .filter((id): id is string => Boolean(id));
+
+    await prisma.role_permissions.createMany({
+      data: instAdminPermIds.map((permId) => ({
+        role_id: instadmin.id,
+        permission_id: permId,
       })),
       skipDuplicates: true,
     });
