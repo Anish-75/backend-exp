@@ -27,9 +27,8 @@ export const auth = betterAuth({
     },
   },
   plugins: [
-    bearer(), // lets mobile/API clients send Authorization: Bearer <token>
+    bearer(),
     phoneNumber({
-      // required by the plugin's type even though you won't use OTP sign-up
       sendOTP: async () => {
         throw new Error("OTP flow disabled — accounts are created server-side by admins");
       },
