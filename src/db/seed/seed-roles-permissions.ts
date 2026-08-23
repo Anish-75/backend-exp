@@ -13,6 +13,8 @@ const BASE_PERMISSIONS = [
   "inst:delete",
   "role:manage",
   "admin:create",
+  "admin:update", 
+  "admin:delete", 
   "user:create",
   "user:read",
   "user:list",
@@ -86,7 +88,6 @@ export async function seedRolesAndPermissions() {
     });
   }
 
-  // ✅ new — assign ADMIN its permissions
   const admin = insertedRoles.find((r) => r.name === "ADMIN");
   if (admin) {
     const adminPermIds = ADMIN_PERMISSIONS
