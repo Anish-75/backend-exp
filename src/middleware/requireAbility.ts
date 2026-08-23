@@ -15,7 +15,10 @@ export function requireAbility(action: Action, subjectType: SubjectName) {
 
       const row = await prisma.user.findUnique({ where: { id } });
       if (!row) return res.status(404).json({ error: "User not found" });
-      target = caslSubject("User", row);
+
+      // CASL conditions check `instId` (camelCase, per ability.types.ts),
+      // but Prisma returns the raw `inst_id` column — map it explicitly.
+      target = caslSubject("User", { ...row, instId: row.inst_id });
     }
 
     if (!req.ability?.can(action, target as any)) {
