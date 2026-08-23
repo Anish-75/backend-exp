@@ -17,16 +17,20 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
     return res.status(401).json({ error: "Account is inactive or archived" });
   }
 
-  const grants = await prisma.role_permissions.findMany({
-    where: { role_id: user.role_id },
-    include: { permissions: true },
-  });
+  const [grants, role] = await Promise.all([
+    prisma.role_permissions.findMany({
+      where: { role_id: user.role_id },
+      include: { permissions: true },
+    }),
+    prisma.roles.findUnique({ where: { id: user.role_id } }), 
+  ]);
 
   req.user = {
     id: user.id,
     instId: user.inst_id,
     roleId: user.role_id,
-    permissions: grants.map((g) => g.permissions.name), // ✅ was g.permission_id
+    roleName: role?.name ?? "", 
+    permissions: grants.map((g) => g.permissions.name),
     isTempPassword: user.is_temp_password,
   };
 
