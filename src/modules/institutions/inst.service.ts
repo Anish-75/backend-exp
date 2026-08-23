@@ -1,12 +1,12 @@
 // src/modules/institutions/inst.service.ts
 import { prisma } from "../../db/client.js";
-import { createInstAdmin } from "../inst-admin/inst-admin.service.js";
+import { createInstAdmin, CreateInstAdminInput } from "../inst-admin/inst-admin.service.js"; // ✅ import type too
 
 export interface CreateInstitutionInput {
   code: string;
   name: string;
   address?: string;
-  phone_number?: string;
+  contact_phone?: string;
   contact_email?: string;
   created_by?: string;
 }
@@ -17,12 +17,12 @@ export async function createInstitution(data: CreateInstitutionInput) {
 
 export async function createInstitutionWithAdmin(
   instData: CreateInstitutionInput,
-  adminPhoneNumber: string
+  adminData: CreateInstAdminInput
 ) {
   const instRow = await prisma.inst.create({ data: instData });
 
   try {
-    const { user, tempPassword } = await createInstAdmin(instRow.id, adminPhoneNumber);
+    const { user, tempPassword } = await createInstAdmin(instRow.id, adminData);
     return { inst: instRow, admin: user, tempPassword };
   } catch (err) {
     await prisma.inst.delete({ where: { id: instRow.id } });

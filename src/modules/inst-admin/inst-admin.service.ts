@@ -3,17 +3,33 @@ import { prisma } from "../../db/client.js";
 import { generateTempPassword } from "../auth/password.utils.js";
 import { deleteUser, updateUser } from "../users/user.service.js";
 
-export async function createInstAdmin(instId: string, phoneNumber: string) {
+export interface CreateInstAdminInput {
+  phoneNumber: string;
+  name?: string;   
+  email?: string;  
+}
+
+export async function createInstAdmin(instId: string, input: CreateInstAdminInput) {
+  const { phoneNumber, name, email } = input;
+
   const instAdminRole = await prisma.roles.findUnique({ where: { name: "INSTADMIN" } });
   if (!instAdminRole) throw new Error("INSTADMIN role not found — run seedRolesAndPermissions first");
+
+
+  const existingActive = await prisma.user.findFirst({
+    where: { inst_id: instId, role_id: instAdminRole.id, is_archived: false },
+  });
+  if (existingActive) {
+    throw new Error("This institution already has an active InstAdmin — archive it before creating a replacement");
+  }
 
   const tempPassword = generateTempPassword();
 
   const result = await auth.api.signUpEmail({
     body: {
-      email: `${phoneNumber}@placeholder.school-erp.local`,
+      email: email ?? `${phoneNumber}@placeholder.school-erp.local`, 
       password: tempPassword,
-      name: phoneNumber,
+      name: name ?? phoneNumber,                                      
       phoneNumber: phoneNumber,
       inst_id: instId,
       role_id: instAdminRole.id,
@@ -22,6 +38,13 @@ export async function createInstAdmin(instId: string, phoneNumber: string) {
       is_archived: false,
     },
   });
+
+  if (result?.user) {
+    await prisma.user.update({
+      where: { id: result.user.id },
+      data: { phoneNumberVerified: true },
+    });
+  }
 
   return { user: result.user, tempPassword };
 }
