@@ -7,14 +7,14 @@ const ROLE_SEED = [
 ];
 
 const BASE_PERMISSIONS = [
-  // Institution permissions (Platform level)
   "inst:create",
   "inst:read",
   "inst:update",
   "inst:delete",
   "role:manage",
-
-  // User management & self-service permissions (scoped to own inst_id for INSTADMIN)
+  "admin:create",
+  "admin:update", 
+  "admin:delete", 
   "user:create",
   "user:read",
   "user:list",
@@ -34,15 +34,17 @@ const INSTADMIN_PERMISSIONS = [
   "password:change_self",
 ];
 
+const ADMIN_PERMISSIONS = [
+  "user:read",
+  "password:change_self",
+];
+
 export async function seedRolesAndPermissions() {
   const insertedRoles = await Promise.all(
     ROLE_SEED.map((r) =>
       prisma.roles.upsert({
         where: { name: r.name },
-        update: {
-          display_name: r.display_name,
-          scope: r.scope,
-        },
+        update: { display_name: r.display_name, scope: r.scope },
         create: r,
       })
     )
@@ -60,7 +62,6 @@ export async function seedRolesAndPermissions() {
 
   const permMap = new Map(insertedPerms.map((p) => [p.name, p.id]));
 
-  // Seed SuperAdmin permissions (full platform access)
   const superadmin = insertedRoles.find((r) => r.name === "SUPERADMIN");
   if (superadmin) {
     await prisma.role_permissions.createMany({
@@ -72,7 +73,6 @@ export async function seedRolesAndPermissions() {
     });
   }
 
-  // Seed InstAdmin permissions (restricted to institution user-management)
   const instadmin = insertedRoles.find((r) => r.name === "INSTADMIN");
   if (instadmin) {
     const instAdminPermIds = INSTADMIN_PERMISSIONS
@@ -82,6 +82,21 @@ export async function seedRolesAndPermissions() {
     await prisma.role_permissions.createMany({
       data: instAdminPermIds.map((permId) => ({
         role_id: instadmin.id,
+        permission_id: permId,
+      })),
+      skipDuplicates: true,
+    });
+  }
+
+  const admin = insertedRoles.find((r) => r.name === "ADMIN");
+  if (admin) {
+    const adminPermIds = ADMIN_PERMISSIONS
+      .map((name) => permMap.get(name))
+      .filter((id): id is string => Boolean(id));
+
+    await prisma.role_permissions.createMany({
+      data: adminPermIds.map((permId) => ({
+        role_id: admin.id,
         permission_id: permId,
       })),
       skipDuplicates: true,
