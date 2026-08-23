@@ -9,7 +9,7 @@ export async function createInstAdminController(req: Request, res: Response) {
 }
 
 export async function updateInstAdminController(req: Request, res: Response) {
-  const id = getRouteParam(req, "id"); // ✅ was: const { id } = req.params;
+  const id = getRouteParam(req, "id"); 
   if (!id) {
     return res.status(400).json({ error: "Invalid admin id" });
   }
