@@ -1,6 +1,7 @@
 import { auth } from "../../lib/auth.js";
 import { prisma } from "../../db/client.js";
 import { generateTempPassword } from "../auth/password.utils.js";
+import { deleteUser, updateUser } from "../users/user.service.js";
 
 export async function createInstAdmin(instId: string, phoneNumber: string) {
   const instAdminRole = await prisma.roles.findUnique({ where: { name: "INSTADMIN" } });
@@ -22,12 +23,24 @@ export async function createInstAdmin(instId: string, phoneNumber: string) {
     },
   });
 
-  if (result?.user) {
-    await prisma.user.update({
-      where: { id: result.user.id },
-      data: { phoneNumberVerified: true }, //  new — consistent with seed-superadmin.ts
-    });
-  }
-
   return { user: result.user, tempPassword };
+}
+
+export async function updateInstAdmin(
+  instId: string,
+  targetUserId: string,
+  data: Partial<{ name: string; email: string }>
+) {
+  return updateUser(instId, targetUserId, data);
+}
+
+export async function deleteInstAdmin(
+  callerRoleName: string,
+  targetUserId: string,
+  targetInstId: string
+) {
+  if (callerRoleName === "INSTADMIN") {
+    throw new Error("INSTADMIN cannot delete another INSTADMIN account");
+  }
+  return deleteUser(targetInstId, targetUserId);
 }
