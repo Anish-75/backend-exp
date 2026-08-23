@@ -1,5 +1,6 @@
 import { auth } from "../../lib/auth.js";
 import { prisma } from "../../db/client.js";
+import { generateTempPassword } from "../auth/password.utils.js";
 
 export async function createUser(
   instId: string,
@@ -10,10 +11,12 @@ export async function createUser(
   const userRole = await prisma.roles.findUnique({ where: { name: role } });
   if (!userRole) throw new Error(`Unknown role: ${role}`);
 
+  const tempPassword = generateTempPassword(); // ✅ was crypto.randomUUID()
+
   const result = await auth.api.signUpEmail({
     body: {
       email: email ?? `${phoneNumber}@placeholder.school-erp.local`,
-      password: crypto.randomUUID(),
+      password: tempPassword,
       name: phoneNumber,
       phoneNumber: phoneNumber,
       inst_id: instId,
@@ -24,7 +27,7 @@ export async function createUser(
     },
   });
 
-  return { user: result.user };
+  return { user: result.user, tempPassword }; // ✅ tempPassword now returned
 }
 
 export async function setNewPassword(userId: string) {
@@ -36,7 +39,6 @@ export async function setNewPassword(userId: string) {
   return row;
 }
 
-
 export async function updateUser(
   instId: string,
   userId: string,
@@ -44,13 +46,13 @@ export async function updateUser(
 ) {
   const existing = await prisma.user.findFirst({ where: { id: userId, inst_id: instId } });
   if (!existing) throw new Error("User not found in this institute");
- 
+
   return prisma.user.update({
     where: { id: userId },
     data,
   });
 }
- 
+
 export async function deleteUser(instId: string, userId: string) {
   const existing = await prisma.user.findFirst({ where: { id: userId, inst_id: instId } });
   if (!existing) throw new Error("User not found in this institute");
@@ -58,7 +60,6 @@ export async function deleteUser(instId: string, userId: string) {
     where: { id: userId },
     data: { is_archived: true, is_active: false },
   });
-  // await auth.api.revokeSessions({ body: { userId } });
-  await prisma.session.deleteMany({ where: {userId } });
+  await prisma.session.deleteMany({ where: { userId } });
   return row;
 }
