@@ -11,7 +11,7 @@ export async function createUser(
   const userRole = await prisma.roles.findUnique({ where: { name: role } });
   if (!userRole) throw new Error(`Unknown role: ${role}`);
 
-  const tempPassword = generateTempPassword(); // ✅ was crypto.randomUUID()
+  const tempPassword = generateTempPassword();
 
   const result = await auth.api.signUpEmail({
     body: {
@@ -27,7 +27,14 @@ export async function createUser(
     },
   });
 
-  return { user: result.user, tempPassword }; // ✅ tempPassword now returned
+  if (result?.user) {
+    await prisma.user.update({
+      where: { id: result.user.id },
+      data: { phoneNumberVerified: true }, // new
+    });
+  }
+
+  return { user: result.user, tempPassword };
 }
 
 export async function setNewPassword(userId: string) {

@@ -1,4 +1,3 @@
-
 import { auth } from "../../lib/auth.js";
 import { prisma } from "../../db/client.js";
 import { generateTempPassword } from "../auth/password.utils.js";
@@ -22,6 +21,13 @@ export async function createInstAdmin(instId: string, phoneNumber: string) {
       is_archived: false,
     },
   });
+
+  if (result?.user) {
+    await prisma.user.update({
+      where: { id: result.user.id },
+      data: { phoneNumberVerified: true }, //  new — consistent with seed-superadmin.ts
+    });
+  }
 
   return { user: result.user, tempPassword };
 }
