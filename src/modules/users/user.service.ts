@@ -6,7 +6,8 @@ export async function createUser(
   instId: string,
   phoneNumber: string,
   role: string,
-  email?: string
+  email?: string,
+  name?: string 
 ) {
   const userRole = await prisma.roles.findUnique({ where: { name: role } });
   if (!userRole) throw new Error(`Unknown role: ${role}`);
@@ -17,7 +18,7 @@ export async function createUser(
     body: {
       email: email ?? `${phoneNumber}@placeholder.school-erp.local`,
       password: tempPassword,
-      name: phoneNumber,
+      name: name ?? phoneNumber, 
       phoneNumber: phoneNumber,
       inst_id: instId,
       role_id: userRole.id,
@@ -30,7 +31,7 @@ export async function createUser(
   if (result?.user) {
     await prisma.user.update({
       where: { id: result.user.id },
-      data: { phoneNumberVerified: true }, // new
+      data: { phoneNumberVerified: true },
     });
   }
 
