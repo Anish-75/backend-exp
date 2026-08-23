@@ -21,11 +21,11 @@
   },
   "name": "backend-exp",
   "version": "1.0.0",
-  "description": "��#\u0000 \u0000b\u0000a\u0000c\u0000k\u0000e\u0000n\u0000d\u0000-\u0000e\u0000x\u0000p\u0000\r\u0000 \u0000",
+  "description": "Backend API for the school ERP",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db:generate": "prisma migrate dev",
+    "db:generate": "prisma generate",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:push": "prisma db push",
     "db:pull": "prisma db pull",
