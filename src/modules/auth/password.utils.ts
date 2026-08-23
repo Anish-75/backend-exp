@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
  
-const AMBIGUOUS = /[0O1lI]/g;
+const AMBIGUOUS = /[0O1lI]/;
 const CHARSET = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%";
  
 export function generateTempPassword(length = 10): string {
