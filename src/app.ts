@@ -5,11 +5,18 @@ import { loadAbility } from "./middleware/loadAbility.js";
 import instRoutes from "./modules/institutions/inst.routes.js";
 import instAdminRoutes from "./modules/inst-admin/inst-admin.routes.js";
 import userRoutes from "./modules/users/user.routes.js";
+import swaggerUi from "swagger-ui-express";
+import { openapiDocument } from "./docs/openapi.js";
 
 
 const app = express();
 
 app.use(express.json());
+
+app.get("/docs.json", (_req, res) => {
+  res.json(openapiDocument);
+});
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(openapiDocument));
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
