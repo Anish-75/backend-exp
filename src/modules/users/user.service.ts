@@ -7,7 +7,8 @@ export async function createUser(
   phoneNumber: string,
   role: string,
   email?: string,
-  name?: string 
+  name?: string,
+  callerId?: string 
 ) {
   const userRole = await prisma.roles.findUnique({ where: { name: role } });
   if (!userRole) throw new Error(`Unknown role: ${role}`);
@@ -18,13 +19,15 @@ export async function createUser(
     body: {
       email: email ?? `${phoneNumber}@placeholder.school-erp.local`,
       password: tempPassword,
-      name: name ?? phoneNumber, 
+      name: name ?? phoneNumber,
       phoneNumber: phoneNumber,
       inst_id: instId,
       role_id: userRole.id,
       is_temp_password: true,
       is_active: true,
       is_archived: false,
+      created_by: callerId, 
+      updated_by: callerId, 
     },
   });
 
@@ -39,34 +42,34 @@ export async function createUser(
 }
 
 export async function setNewPassword(userId: string) {
-  const row = await prisma.user.update({
+  return prisma.user.update({
     where: { id: userId },
-    data: { is_temp_password: false },
+    data: { is_temp_password: false, updated_by: userId }, 
   });
-
-  return row;
 }
 
 export async function updateUser(
   instId: string,
   userId: string,
-  data: Partial<{ name: string; email: string }>
+  data: Partial<{ name: string; email: string }>,
+  callerId: string 
 ) {
   const existing = await prisma.user.findFirst({ where: { id: userId, inst_id: instId } });
   if (!existing) throw new Error("User not found in this institute");
 
   return prisma.user.update({
     where: { id: userId },
-    data,
+    data: { ...data, updated_by: callerId }, 
   });
 }
 
-export async function deleteUser(instId: string, userId: string) {
+export async function deleteUser(instId: string, userId: string, callerId: string) {
   const existing = await prisma.user.findFirst({ where: { id: userId, inst_id: instId } });
   if (!existing) throw new Error("User not found in this institute");
+
   const row = await prisma.user.update({
     where: { id: userId },
-    data: { is_archived: true, is_active: false },
+    data: { is_archived: true, is_active: false, updated_by: callerId }, 
   });
   await prisma.session.deleteMany({ where: { userId } });
   return row;

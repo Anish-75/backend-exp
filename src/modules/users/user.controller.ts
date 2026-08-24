@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { createUser, updateUser, deleteUser } from "./user.service.js";
-import { getRouteParam } from "../../utils/getRouteParam.js"; 
+import { getRouteParam } from "../../utils/getRouteParam.js";
 
 const SUPPORTED_ROLES = ["ADMIN"] as const;
 const DEFERRED_ROLES = ["STUDENT", "TEACHER"];
@@ -16,31 +16,27 @@ export async function createUserController(req: Request, res: Response) {
     return res.status(400).json({ error: `Unsupported role: ${role}` });
   }
 
-  const result = await createUser(instId, phoneNumber, role, email, name);
+  const result = await createUser(instId, phoneNumber, role, email, name, req.user!.id); 
   res.status(201).json(result);
 }
 
 export async function updateUserController(req: Request, res: Response) {
-  const id = getRouteParam(req, "id"); 
-  if (!id) {
-    return res.status(400).json({ error: "Invalid user id" });
-  }
+  const id = getRouteParam(req, "id");
+  if (!id) return res.status(400).json({ error: "Invalid user id" });
 
   const { name, email } = req.body;
   const instId = req.user!.instId;
 
-  const result = await updateUser(instId, id, { name, email });
+  const result = await updateUser(instId, id, { name, email }, req.user!.id); 
   res.json(result);
 }
 
 export async function deleteUserController(req: Request, res: Response) {
-  const id = getRouteParam(req, "id"); 
-  if (!id) {
-    return res.status(400).json({ error: "Invalid user id" });
-  }
+  const id = getRouteParam(req, "id");
+  if (!id) return res.status(400).json({ error: "Invalid user id" });
 
   const instId = req.user!.instId;
 
-  const result = await deleteUser(instId, id);
+  const result = await deleteUser(instId, id, req.user!.id); 
   res.json(result);
 }

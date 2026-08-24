@@ -2,7 +2,6 @@ import { Router } from "express";
 import { authenticate } from "../../middleware/authenticate.js";
 import { requirePermission } from "../../middleware/requirePermission.js";
 import {
-  createInstAdminController,
   updateInstAdminController,   
   deleteInstAdminController,   
 } from "./inst-admin.controller.js";
