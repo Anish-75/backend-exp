@@ -5,16 +5,19 @@ import { deleteUser, updateUser } from "../users/user.service.js";
 
 export interface CreateInstAdminInput {
   phoneNumber: string;
-  name?: string;   
-  email?: string;  
+  name?: string;
+  email?: string;
 }
 
-export async function createInstAdmin(instId: string, input: CreateInstAdminInput) {
+export async function createInstAdmin(
+  instId: string,
+  input: CreateInstAdminInput,
+  callerId: string 
+) {
   const { phoneNumber, name, email } = input;
 
   const instAdminRole = await prisma.roles.findUnique({ where: { name: "INSTADMIN" } });
   if (!instAdminRole) throw new Error("INSTADMIN role not found — run seedRolesAndPermissions first");
-
 
   const existingActive = await prisma.user.findFirst({
     where: { inst_id: instId, role_id: instAdminRole.id, is_archived: false },
@@ -27,15 +30,17 @@ export async function createInstAdmin(instId: string, input: CreateInstAdminInpu
 
   const result = await auth.api.signUpEmail({
     body: {
-      email: email ?? `${phoneNumber}@placeholder.school-erp.local`, 
+      email: email ?? `${phoneNumber}@placeholder.school-erp.local`,
       password: tempPassword,
-      name: name ?? phoneNumber,                                      
+      name: name ?? phoneNumber,
       phoneNumber: phoneNumber,
       inst_id: instId,
       role_id: instAdminRole.id,
       is_temp_password: true,
       is_active: true,
       is_archived: false,
+      created_by: callerId, 
+      updated_by: callerId, 
     },
   });
 
@@ -52,18 +57,20 @@ export async function createInstAdmin(instId: string, input: CreateInstAdminInpu
 export async function updateInstAdmin(
   instId: string,
   targetUserId: string,
-  data: Partial<{ name: string; email: string }>
+  data: Partial<{ name: string; email: string }>,
+  callerId: string 
 ) {
-  return updateUser(instId, targetUserId, data);
+  return updateUser(instId, targetUserId, data, callerId);
 }
 
 export async function deleteInstAdmin(
   callerRoleName: string,
   targetUserId: string,
-  targetInstId: string
+  targetInstId: string,
+  callerId: string 
 ) {
   if (callerRoleName === "INSTADMIN") {
     throw new Error("INSTADMIN cannot delete another INSTADMIN account");
   }
-  return deleteUser(targetInstId, targetUserId);
+  return deleteUser(targetInstId, targetUserId, callerId);
 }

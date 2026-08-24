@@ -1,39 +1,25 @@
 import { Request, Response } from "express";
-import { createInstAdmin, updateInstAdmin, deleteInstAdmin } from "./inst-admin.service.js";
+import { updateInstAdmin, deleteInstAdmin } from "./inst-admin.service.js";
 import { getRouteParam } from "../../utils/getRouteParam.js";
 
-export async function createInstAdminController(req: Request, res: Response) {
-  const { instId, phoneNumber } = req.body;
-  const result = await createInstAdmin(instId, phoneNumber);
-  res.status(201).json(result);
-}
-
 export async function updateInstAdminController(req: Request, res: Response) {
-  const id = getRouteParam(req, "id"); 
-  if (!id) {
-    return res.status(400).json({ error: "Invalid admin id" });
-  }
+  const id = getRouteParam(req, "id");
+  if (!id) return res.status(400).json({ error: "Invalid admin id" });
 
   const { name, email, instId } = req.body;
-  if (!instId) {
-    return res.status(400).json({ error: "instId is required to scope the update" });
-  }
+  if (!instId) return res.status(400).json({ error: "instId is required to scope the update" });
 
-  const result = await updateInstAdmin(instId, id, { name, email });
+  const result = await updateInstAdmin(instId, id, { name, email }, req.user!.id); 
   res.json(result);
 }
 
 export async function deleteInstAdminController(req: Request, res: Response) {
-  const id = getRouteParam(req, "id"); 
-  if (!id) {
-    return res.status(400).json({ error: "Invalid admin id" });
-  }
+  const id = getRouteParam(req, "id");
+  if (!id) return res.status(400).json({ error: "Invalid admin id" });
 
   const { instId } = req.body;
-  if (!instId) {
-    return res.status(400).json({ error: "instId is required to scope the delete" });
-  }
+  if (!instId) return res.status(400).json({ error: "instId is required to scope the delete" });
 
-  const result = await deleteInstAdmin(req.user!.roleName, id, instId);
+  const result = await deleteInstAdmin(req.user!.roleName, id, instId, req.user!.id); 
   res.json(result);
 }
