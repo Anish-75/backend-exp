@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { bearer, phoneNumber } from "better-auth/plugins";
@@ -14,6 +15,11 @@ export const auth = betterAuth({
   session: {
     expiresIn: env.SESSION_TTL_SECONDS,
     updateAge: env.SESSION_UPDATE_AGE_SECONDS,
+  },
+  advanced: {
+    database: {
+      generateId: () => randomUUID(),
+    },
   },
   user: {
     additionalFields: {
