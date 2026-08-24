@@ -6,7 +6,7 @@ export interface CreateInstitutionInput {
   code: string;
   name: string;
   address?: string;
-  contact_phone?: string;
+  phone_number?: string;
   contact_email?: string;
   created_by?: string;
 }

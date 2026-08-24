@@ -135,22 +135,6 @@ export const openapiDocument = {
         },
       },
     },
-    "/admins": {
-      post: {
-        tags: ["Institution admins"],
-        summary: "Create an institution administrator",
-        security: authenticated,
-        requestBody: {
-          required: true,
-          content: { "application/json": { schema: { $ref: "#/components/schemas/CreateAdminRequest" } } },
-        },
-        responses: {
-          "201": { description: "Administrator created", content: { "application/json": { schema: { $ref: "#/components/schemas/CreatedUserResponse" } } } },
-          "401": errorResponse,
-          "403": errorResponse,
-        },
-      },
-    },
     "/admins/{id}": {
       parameters: [{ $ref: "#/components/parameters/Id" }],
       patch: {
@@ -243,8 +227,8 @@ export const openapiDocument = {
       CreatedUserResponse: { type: "object", required: ["user", "tempPassword"], properties: { user: { type: "object", additionalProperties: true }, tempPassword: { type: "string" } } },
       SetNewPasswordRequest: { type: "object", required: ["current_password", "new_password", "confirm_new_password"], properties: { current_password: { type: "string", format: "password" }, new_password: { type: "string", format: "password" }, confirm_new_password: { type: "string", format: "password" } } },
       CreateInstitutionRequest: { type: "object", required: ["instData", "adminData"], properties: { instData: { $ref: "#/components/schemas/InstitutionInput" }, adminData: { $ref: "#/components/schemas/AdminRequest" } } },
-      InstitutionInput: { type: "object", required: ["code", "name"], properties: { code: { type: "string", maxLength: 20 }, name: { type: "string" }, address: { type: "string" }, contact_phone: { type: "string" }, contact_email: { type: "string", format: "email" } } },
-      UpdateInstitutionRequest: { allOf: [{ $ref: "#/components/schemas/InstitutionInput" }], description: "Any subset of institution fields may be supplied." },
+      InstitutionInput: { type: "object", required: ["code", "name"], properties: { code: { type: "string", maxLength: 20 }, name: { type: "string" }, address: { type: "string" }, phone_number: { type: "string" }, contact_email: { type: "string", format: "email" } } },
+      UpdateInstitutionRequest: { type: "object", description: "Any subset of institution fields may be supplied.", properties: { code: { type: "string", maxLength: 20 }, name: { type: "string" }, address: { type: "string" }, phone_number: { type: "string" }, contact_email: { type: "string", format: "email" } } },
       AdminRequest: { type: "object", required: ["phoneNumber"], properties: { phoneNumber: { type: "string" }, name: { type: "string" }, email: { type: "string", format: "email" } } },
       CreateAdminRequest: { type: "object", required: ["instId", "phoneNumber"], properties: { instId: { type: "string", format: "uuid" }, phoneNumber: { type: "string" } } },
       UpdateAdminRequest: { type: "object", required: ["instId"], properties: { instId: { type: "string", format: "uuid" }, name: { type: "string" }, email: { type: "string", format: "email" } } },

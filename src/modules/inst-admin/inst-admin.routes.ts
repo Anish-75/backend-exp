@@ -9,8 +9,7 @@ import {
 
 const router = Router();
 
-router.post("/admins", authenticate, requirePermission("admin:create"), createInstAdminController);
-router.patch("/admins/:id", authenticate, requirePermission("admin:update"), updateInstAdminController); // ✅ new
-router.delete("/admins/:id", authenticate, requirePermission("admin:delete"), deleteInstAdminController); // ✅ new
+router.patch("/admins/:id", authenticate, requirePermission("admin:update"), updateInstAdminController); 
+router.delete("/admins/:id", authenticate, requirePermission("admin:delete"), deleteInstAdminController); 
 
 export default router;
